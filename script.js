@@ -26,6 +26,7 @@ function genImage(blob, name, isNullSticker){
         
         elem.src = (name.startsWith("STK-") && name.endsWith(".was")) ? "./imgs/was-placeholder.png" : img;
         elem.classList.add((isSticker(blob, name)) ? "sticker" : "media-img");
+        if(!isSticker(blob, name)) elem.onclick = () => viewMedia(img, "img")
     }
 
     return elem;
@@ -69,7 +70,7 @@ function genDoc(blob, name, isPdf){
         docOpenA.classList.add("media-doc-open");
         docOpenA.href = "#"
         docOpenA.innerText = "Open";
-        docOpenA.onclick = () => viewPDF(doc);
+        docOpenA.onclick = () => viewMedia(doc, 'pdf');
     }
 
     let docDownloadA = document.createElement("a");
@@ -226,23 +227,27 @@ function newMsgElem(sender, time, type, msg, sentOrReceived){
 
     return wrap;
 }
-function viewPDF(blobURL){
-    let iframe = document.getElementById("pdf-viewer");
+function viewMedia(blobURL, type){
+    let viewer;
+    if(type === "pdf") viewer = document.getElementById("pdf-viewer");
+    else if(type === "img") viewer = document.getElementById("img-viewer");
+
     let wrapper = document.getElementById("popup-wrapper");
     let closeBtn = document.getElementById("popup-close-btn");
-    iframe.src = blobURL;
+    viewer.src = blobURL;
 
     wrapper.style.display = "grid";
-    iframe.style.display = "block";
+    viewer.style.display = "block";
     closeBtn.style.display = "block"
 
+    wrapper.onclick = () => closeBtn.click();
     closeBtn.onclick = () => {
-        iframe.style.animation = "popup-hide .3s";
-        iframe.onanimationend = () => {
-            iframe.style.display = "none";
+        viewer.style.animation = "popup-hide .3s";
+        viewer.onanimationend = () => {
+            viewer.style.display = "none";
             wrapper.style.display = "none"
-            iframe.style.animation = "popup-show .3s"
-            iframe.onanimationend = null;
+            viewer.style.animation = "popup-show .3s"
+            viewer.onanimationend = null;
         }
     }
 }

@@ -42,7 +42,7 @@ body{
 }
 
 .sticker{
-    width: 12vw;
+    width: 150px;
 }
 .media-img{
     width: 22vw;
@@ -136,6 +136,12 @@ body{
     animation: popup-show .3s;
     display: none;
 }
+#img-viewer{
+    height: 90vh;
+    margin: auto;
+    animation: popup-show .3s;
+    display: none;
+}
 #popup-close-btn-icon{
     position: fixed;
     top: 10px;
@@ -186,5 +192,47 @@ body{
 @keyframes popup-hide {
     100%{
         transform: scale(0);
+    }
+}
+
+
+
+@media screen and (max-width: 1000px){
+    #select-user-popup{
+        width: 30vw;
+    }
+}
+@media screen and (max-width: 800px){
+    .media-img{
+        width: 30vw;
+    }
+}
+@media screen and (max-width: 700px){
+    .msg-content{
+        max-width: 55vw;
+    }
+    #select-user-popup{
+        width: 40vw;
+    }
+}
+@media screen and (max-width: 600px){
+    .media-img{
+        width: 40vw;
+    }
+}
+@media screen and (max-width: 470px){
+    #select-user-popup{
+        width: 50vw;
+    }
+}
+@media screen and (max-width: 400px){
+    .sticker{
+        width: 120px;
+    }
+    #select-user-popup{
+        width: 65vw;
+    }
+    .media-img{
+        width: 50vw;
     }
 }
