@@ -1,0 +1,190 @@
+@font-face {
+    font-family: urbanist;
+    src: url(./fonts/Urbanist-VariableFont_wght.ttf);
+}
+
+*{
+    font-family: urbanist;
+}
+
+body{
+    margin: 0px;
+    background: rgb(10, 10, 10);
+}
+
+#add-chat-btn{
+    border: none;
+    padding: 0px;
+    width: 35px;
+    height: 35px;
+    display: grid;
+    border-radius: 10px;
+    border-top-left-radius: 0px;
+    margin: 0px;
+    margin-bottom: 0px;
+    cursor: pointer;
+}
+#add-chat-btn img{
+    width: 15px;
+    margin: auto;
+    filter: invert(.7);
+}
+
+#chat-window{
+    width: 80%;
+    height: calc(90vh - 20px);
+    padding: 20px;
+    background: rgb(25, 25, 25);
+    border-radius: 15px;
+    margin: auto;
+    margin-top: 0px;
+    overflow-y: auto;
+}
+
+.sticker{
+    width: 12vw;
+}
+.media-img{
+    width: 22vw;
+}
+.media-vid{
+    width: 19vw;
+}
+
+.msg{
+    padding: 5px;
+    border-radius: 15px;
+    width: fit-content;
+}
+.msg.sent{
+    margin-left: auto;
+}
+.msg-sender{
+    margin: 0px;
+    padding: 0px;
+    font-size: 0.85em;
+    color: rgb(255, 255, 98);
+}
+.msg-sender-div{
+    background: rgb(39, 39, 39);
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    width: fit-content;
+}
+.msg.sent .msg-sender-div{
+    margin-left: auto;
+}
+.msg-content{
+    background: rgb(39, 39, 39);
+    padding: 10px;
+    border-radius: 10px;
+    border-bottom-left-radius: 0px;
+    max-width: 40vw;
+    width: fit-content;
+}
+.msg.sent .msg-content{
+    border-radius: 10px;
+    border-bottom-right-radius: 0px;
+    margin-left: auto;
+}
+.msg-text{
+    margin: 0px;
+    margin-left: 2px;
+}
+.msg-time{
+    width: fit-content;
+    margin: 0px;
+    margin-left: auto;
+    font-size: .8em;
+    color: rgba(255, 255, 255, .7)
+}
+
+.media-doc{
+    background: rgba(0, 0, 0, 0.3);
+    padding: 10px;
+    border-radius: 7px;
+}
+.media-doc-name{
+    margin: 0px;
+}
+.media-doc-funcs{
+    display: grid;
+    grid-template-columns: max-content max-content;
+    grid-gap: 7px;
+}
+.media-doc-open, .media-doc-dl{
+    font-size: .8em;
+    color: rgb(255, 255, 98);
+}
+
+#popup-wrapper{
+    display: grid;
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    background: rgba(0, 0, 0, .4);
+}
+#pdf-viewer{
+    width: 80%;
+    height: 80vh;
+    margin: auto;
+    animation: popup-show .3s;
+    display: none;
+}
+#popup-close-btn-icon{
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    filter: invert(1);
+    width: 17px;
+    transform: rotate(45deg);
+}
+#popup-close-btn{
+    width: fit-content;
+    height: fit-content;
+    cursor: pointer;
+}
+#select-user-popup{
+    display: none;
+    margin: auto;
+    background: rgb(0, 142, 74);
+    padding: 15px 25px;
+    border-radius: 15px;
+    width: 20vw;
+    animation: popup-show .3s;
+}
+#select-user-popup-title{
+    margin: 0px;
+    margin-bottom: 15px;
+}
+#select-user-input{
+    width: 100%;
+    padding: 10px 20px;
+    padding-left: 10px;
+    font-size: 1em;
+    border: none;
+    border-radius: 5px;
+}
+#select-user-submit{
+    padding: 7px 20px;
+    border-radius: 7px;
+    border: none;
+    margin-top: 5px;
+    font-size: .92em;
+}
+
+@keyframes popup-show {
+    0%{
+        transform: scale(0);
+    }
+}
+@keyframes popup-hide {
+    100%{
+        transform: scale(0);
+    }
+}

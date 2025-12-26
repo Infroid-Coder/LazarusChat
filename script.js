@@ -1,0 +1,341 @@
+function isSticker(blob, name){
+    let isWebp = (blob.type === "image/webp" || /\.(webp|was)$/i.test(name)) ? true : false;
+    let isValidName = name.startsWith("STK-");
+
+    return (isWebp && isValidName) ? true : false;
+}
+
+function getDateObj(date, time){
+    let dateSplit = date.split("/");
+    let dateFormatted = [];
+    for(let i = dateSplit.length-1; i >= 0; i--){
+        dateFormatted.push(dateSplit[i]);
+    }
+
+    let d = new Date(dateFormatted.join("-") + ` ${time}`);
+
+    return d;
+}
+function genImage(blob, name, isNullSticker){
+    let elem = document.createElement("img");
+    if(isNullSticker){
+        elem.src = "./imgs/sticker-placeholder.png";
+        elem.classList.add("sticker");
+    } else{
+        let img = URL.createObjectURL(blob);
+        
+        elem.src = (name.startsWith("STK-") && name.endsWith(".was")) ? "./imgs/was-placeholder.png" : img;
+        elem.classList.add((isSticker(blob, name)) ? "sticker" : "media-img");
+    }
+
+    return elem;
+}
+function genVideo(blob, name){
+    let elem = document.createElement("video");
+    let vid = URL.createObjectURL(blob);
+    
+    elem.src = vid;
+    elem.classList.add("media-vid");
+    elem.setAttribute("controls", "");
+
+    return elem;
+}
+function genAudio(blob, name){
+    let elem = document.createElement("audio");
+    let vid = URL.createObjectURL(blob);
+    
+    elem.src = vid;
+    elem.classList.add("media-aud");
+    elem.setAttribute("controls", "");
+
+    return elem;
+}
+function genDoc(blob, name, isPdf){
+    let doc = URL.createObjectURL(blob);
+
+    let mediaDocDiv = document.createElement("div");
+    mediaDocDiv.classList.add("media-doc");
+
+    let mediaDocNameP = document.createElement("media-doc-name");
+    mediaDocNameP.classList.add("media-doc-name");
+    mediaDocNameP.innerText = name;
+
+    let mediaDocFuncsDiv = document.createElement("div");
+    mediaDocFuncsDiv.classList.add("media-doc-funcs");
+
+    let docOpenA;
+    if(isPdf){
+        docOpenA = document.createElement("a");
+        docOpenA.classList.add("media-doc-open");
+        docOpenA.href = "#"
+        docOpenA.innerText = "Open";
+        docOpenA.onclick = () => viewPDF(doc);
+    }
+
+    let docDownloadA = document.createElement("a");
+    docDownloadA.classList.add("media-doc-dl");
+    docDownloadA.download = name;
+    docDownloadA.href = doc;
+    docDownloadA.innerText = "Download";
+
+    mediaDocDiv.appendChild(mediaDocNameP);
+    if(docOpenA) mediaDocFuncsDiv.appendChild(docOpenA);
+    mediaDocFuncsDiv.appendChild(docDownloadA);
+    mediaDocDiv.appendChild(mediaDocFuncsDiv);
+
+    return mediaDocDiv;
+}
+
+function typeOf(blob, name){
+    let result = null;
+    if(blob.type === "text/plain" || /\.txt$/i.test(name)){
+        result = "txt";
+    } else if(blob.type.startsWith("image/") || /\.(png|jpe?g|bmp|webp|svg|gif|was)$/i.test(name)){
+        result = "img";
+    } else if(blob.type === "application/pdf" || /\.pdf$/i.test(name)){
+        result = "pdf"
+    } else if(blob.type === "video/" || /\.(mp4|3gp|mkv|webm|mov)$/i.test(name)){
+        result = "video";
+    } else if(blob.type === "audio/" || /\.(mp3|m4a|ogg|wav|aac|opus)$/i.test(name)){
+        result = "audio";
+    }
+    return result;
+}
+
+function processMsgs(chat){
+    let chatSplitbyLB = chat.split(/\n/g);
+    if(chatSplitbyLB[chatSplitbyLB.length-1] === "") chatSplitbyLB.pop();
+
+    let msgStartReg = /^\d{2}\/\d{2}\/\d{4}, \d{2}:\d{2} - /;
+    let systemMsgReg = /^\d{2}\/\d{2}\/\d{4}, \d{2}:\d{2} - ([^:]+$|[^:]{40}.+)/;
+
+    let msgs = new Map();
+    let lastMsgDateObj = null;
+    let lastMsgDate, lastMsgIndex;
+
+    let users = [];
+    let userSelect = document.getElementById("select-user-input");
+
+    for(let i = 0; i < chatSplitbyLB.length; i++){
+        let line = chatSplitbyLB[i];
+        if(msgStartReg.test(line)){
+            let isSystemMsg = systemMsgReg.test(line) ? true : false;
+            let date = line.slice(0, 10);
+            if(!msgs.has(date)) msgs.set(date, []);
+
+            let time = line.slice(12, 17);
+            let sender = (!isSystemMsg) ? line.slice(20, line.slice(17).indexOf(":")+17) : null;
+            let msg = (!isSystemMsg) ? line.slice(line.slice(17).indexOf(":")+19) : line.slice(20);
+
+            if(sender && !users.includes(sender)){
+                users.push(sender);
+                userSelect.innerHTML += `<option value="${sender}">${sender}</option>`
+            }
+
+            let dateObj = getDateObj(date, time);
+
+            if(lastMsgDateObj && lastMsgDateObj.getTime() <= dateObj.getTime()){
+                msgs.get(date).push({
+                    msg: [msg],
+                    time: time,
+                    date: date,
+                    sender: sender
+                });
+            }
+
+            lastMsgDateObj = dateObj;
+            lastMsgDate = date;
+            lastMsgIndex = msgs.get(date).length-1;
+        } else{
+            msgs.get(lastMsgDate)[lastMsgIndex].msg.push(line);
+        }
+    }
+    return {msgs, users};
+}
+
+function newMsgElem(sender, time, type, msg, sentOrReceived){
+    if(type === "text" && msg.join("") === "") return null;
+
+    let wrap = document.createElement("div");
+    wrap.classList.add("msg");
+    wrap.classList.add((sentOrReceived === 0) ? "sent" : "received");
+
+    let senderDiv = document.createElement("div")
+    senderDiv.classList.add("msg-sender-div");
+
+    let contentDiv = document.createElement("div")
+    contentDiv.classList.add("msg-content");
+
+    let timeDiv = document.createElement("div")
+    timeDiv.classList.add("msg-time-div");
+
+    let senderP = document.createElement("p");
+    senderP.classList.add("msg-sender");
+    senderP.innerText = sender;
+
+    let msgElem;
+    if(type === "text"){
+        let msgP = document.createElement("p");
+        msgP.classList.add("msg-text");
+        msg.forEach((val, i) => {
+            if(val !== ""){
+                let span = document.createElement("span");
+                span.innerText += val;
+                msgP.appendChild(span);
+            }
+            msgP.appendChild(document.createElement("br"));
+        })
+        msgElem = msgP;
+    } else if(type === "media"){
+        let file = msg;
+        let mediaDiv = document.createElement("div");
+        mediaDiv.classList.add("media-div");
+        if(file.type === "img"){
+            let img = genImage(file.data, file.name);
+            mediaDiv.appendChild(img);
+        } else if(file.type === "video"){
+            let vid = genVideo(file.data, file.name);
+            mediaDiv.appendChild(vid);
+        } else if(file.type === "audio"){
+            let aud = genAudio(file.data, file.name);
+            mediaDiv.appendChild(aud);
+        } else if(!file.type || file.type === "pdf"){
+            let doc = genDoc(file.data, file.name, (file.type === "pdf") ? true : false);
+            mediaDiv.appendChild(doc);
+        }
+        msgElem = mediaDiv;
+    } else if(type === "null-sticker"){
+        let mediaDiv = document.createElement("div");
+        mediaDiv.classList.add("media-div");
+        let img = genImage(null, null, true)
+        mediaDiv.appendChild(img);
+        msgElem = mediaDiv;
+    }
+
+    let timeP = document.createElement("p");
+    timeP.classList.add("msg-time");
+    timeP.innerText = time;
+
+    senderDiv.appendChild(senderP);
+    contentDiv.appendChild(msgElem);
+    timeDiv.appendChild(timeP);
+
+    wrap.appendChild(senderDiv);
+    wrap.appendChild(contentDiv);
+    wrap.appendChild(timeDiv);
+
+    return wrap;
+}
+function viewPDF(blobURL){
+    let iframe = document.getElementById("pdf-viewer");
+    let wrapper = document.getElementById("popup-wrapper");
+    let closeBtn = document.getElementById("popup-close-btn");
+    iframe.src = blobURL;
+
+    wrapper.style.display = "grid";
+    iframe.style.display = "block";
+    closeBtn.style.display = "block"
+
+    closeBtn.onclick = () => {
+        iframe.style.animation = "popup-hide .3s";
+        iframe.onanimationend = () => {
+            iframe.style.display = "none";
+            wrapper.style.display = "none"
+            iframe.style.animation = "popup-show .3s"
+            iframe.onanimationend = null;
+        }
+    }
+}
+
+let input = document.getElementById("upload");
+let addBtn = document.getElementById("add-chat-btn");
+
+addBtn.onclick = () => input.click();
+input.onchange = async e => {
+    const inputFiles = [...e.target.files];
+    
+    const processedFiles = new Map();
+    let fName;
+    
+    if(inputFiles[0].name.endsWith(".zip")){
+        var zip = new JSZip();
+        await zip.loadAsync(inputFiles[0])
+        .then(async z => {
+            for(let [name, obj] of Object.entries(z.files)){
+                if(obj.dir) continue;
+
+                if(name.endsWith(".txt")){
+                    const text = await obj.async("string");
+                    processedFiles.set(name, {
+                        name: name,
+                        data: text,
+                        type: "txt"
+                    });
+                    fName = name;
+                } else{
+                    const blob = await obj.async("blob");
+                    processedFiles.set(name, {
+                        name: name,
+                        data: blob,
+                        blobURL: URL.createObjectURL(blob),
+                        type: typeOf(blob, name)
+                    });
+                }
+            }
+        });
+        document.getElementById("chat-msg-div").innerHTML = "";
+    }
+
+    let popupWrapper = document.getElementById("popup-wrapper");
+    let selectUserPopup = document.getElementById("select-user-popup");
+    let selectUserInput = document.getElementById("select-user-input");
+    let selectUserSubmit = document.getElementById("select-user-submit");
+    let popupCloseBtn = document.getElementById("popup-close-btn");
+
+    selectUserInput.innerHTML = "";
+
+    let {msgs, users} = processMsgs(processedFiles.get(fName).data);
+
+
+    popupWrapper.style.display = "grid";
+    selectUserPopup.style.display = "block";
+    popupCloseBtn.style.display = "none";
+
+
+    selectUserSubmit.onclick = () => {
+        selectUserPopup.style.animation = "popup-hide .3s";
+        selectUserPopup.onanimationend = () => {
+            selectUserPopup.style.display = "none";
+            popupWrapper.style.display = "none";
+            selectUserPopup.style.animation = "popup-show .3s"
+            selectUserPopup.onanimationend = null;
+        }
+
+        let meUser = (users.includes(selectUserInput.value)) ? selectUserInput.value : users[0];
+        let keys = [...msgs.keys()];
+    
+        for(let i = 0; i < keys.length; i++){
+            let iMsgs = msgs.get(keys[i]);
+            for(let j = 0; j < iMsgs.length; j++){
+                let jMsg = iMsgs[j];
+                if(!jMsg.msg[0] === "") continue;
+
+                if(jMsg.msg[0].endsWith("(file attached)")){
+                    let fileName = jMsg.msg[0].slice(0, -16);
+                    let file = processedFiles.get(fileName);
+                    if(file){
+                        let msg = newMsgElem(jMsg.sender, jMsg.time, "media", file, (jMsg.sender === meUser) ? 0 : 1);
+                        if(msg) document.getElementById("chat-msg-div").appendChild(msg);
+                    } else if(fileName.startsWith("STK-") && fileName.endsWith(".webp")){
+                        let msg = newMsgElem(jMsg.sender, jMsg.time, "null-sticker", jMsg.msg, (jMsg.sender === meUser) ? 0 : 1)
+                        if(msg) document.getElementById("chat-msg-div").appendChild(msg);
+                    }
+                } else{
+                    let msg = newMsgElem(jMsg.sender, jMsg.time, "text", jMsg.msg, (jMsg.sender === meUser) ? 0 : 1)
+                    if(msg) document.getElementById("chat-msg-div").appendChild(msg);
+                }
+            }
+        }
+    }
+    
+}

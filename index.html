@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="color-scheme" content="dark">
+    <meta http-equiv="X-UA-Compatible" content="IE=7">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="lazarus, chat, lazuruschat, lazarus-chat, whatsapp, chat export, export, messages, zip">
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="./imgs/favicon.png">
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <title>ChatReader</title>
+</head>
+<body>
+    
+    <input type="file" id="upload" hidden>
+    <button id="add-chat-btn">
+        <img src="./imgs/add-icon.png" alt="Add Chat">
+    </button>
+
+    <div id="chat-window">
+        <div id="chat-info-bar">
+            <h2 id="cib-recipient-name"></h2>
+        </div>
+        <div id="chat-msg-div"></div>
+    </div>
+
+    <div id="popup-wrapper">
+        <div id="select-user-popup">
+            <h2 id="select-user-popup-title">Select User:</h2>
+            <select name="select-user" id="select-user-input">
+                
+            </select>
+            <button id="select-user-submit">Select</button>
+        </div>
+        <iframe src="" frameborder="0" id="pdf-viewer"></iframe>
+        <div id="popup-close-btn">
+            <img src="./imgs/add-icon.png" alt="Close Popup" id="popup-close-btn-icon">
+        </div>
+    </div>
+
+
+    <script src="./script.js"></script>
+</body>
+</html>
