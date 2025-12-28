@@ -9,21 +9,35 @@
     <meta name="keywords" content="lazarus, chat, lazuruschat, lazarus-chat, whatsapp, chat export, export, messages, zip">
     <link rel="stylesheet" href="style.css">
     <link rel="shortcut icon" href="./imgs/favicon.png">
-    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <script src="./jszip.js"></script>
     <title>Lazarus Chat</title>
 </head>
 <body>
-    
     <input type="file" id="upload" hidden>
-    <button id="add-chat-btn">
-        <img src="./imgs/add-icon.png" alt="Add Chat">
-    </button>
+
+    <nav id="navbar">
+        <div id="nav-title-div">
+            <img src="./imgs/favicon.png" alt="Logo" id="nav-logo">
+            <h1 id="nav-title"></h1>
+        </div>
+    </nav>
 
     <div id="chat-window">
         <div id="chat-info-bar">
             <h2 id="cib-recipient-name"></h2>
         </div>
-        <div id="chat-msg-div"></div>
+        <div id="chat-msg-div">
+        </div>
+        <div id="chat-window-placeholder-div">
+            <img src="./imgs/large-add-icon.png" alt="Add Chat" id="chat-window-placeholder-icon">
+            <p id="chat-window-placeholder-p">No Chat Loaded Yet. Add Chat</p>
+        </div>
+    </div>
+
+    <div id="toolbar">
+        <button id="add-chat-btn">
+            <img src="./imgs/add-icon.png" alt="Add Chat">
+        </button>
     </div>
 
     <div id="popup-wrapper">

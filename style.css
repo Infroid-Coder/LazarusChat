@@ -12,6 +12,14 @@ body{
     background: rgb(10, 10, 10);
 }
 
+#navbar{
+    display: none;
+}
+#nav-logo{
+    width: 50px;
+    display: none;
+}
+
 #add-chat-btn{
     border: none;
     padding: 0px;
@@ -32,13 +40,36 @@ body{
 
 #chat-window{
     width: 80%;
-    height: calc(90vh - 20px);
+    height: calc(85vh - 20px);
     padding: 20px;
     background: rgb(25, 25, 25);
     border-radius: 15px;
-    margin: auto;
-    margin-top: 0px;
+    margin: 15px auto;
+    /* margin-top: 0px; */
     overflow-y: auto;
+    display: grid;
+}
+#chat-msg-div, #chat-info-bar{
+    display: none;
+}
+
+#chat-window-placeholder-div{
+    margin: auto;
+    display: grid;
+    cursor: pointer;
+}
+#chat-window-placeholder-div:hover #chat-window-placeholder-icon{
+    filter: invert(.4);
+}
+#chat-window-placeholder-icon{
+    width: 200px;
+    filter: invert(.3);
+    margin: auto;
+    transition: .2s;
+}
+#chat-window-placeholder-p{
+    margin: auto;
+    margin-top: 10px;
 }
 
 .sticker{

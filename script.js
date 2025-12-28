@@ -254,8 +254,13 @@ function viewMedia(blobURL, type){
 
 let input = document.getElementById("upload");
 let addBtn = document.getElementById("add-chat-btn");
+let addChatInCWin = document.getElementById("chat-window-placeholder-div");
+let chatMsgDiv = document.getElementById("chat-msg-div");
+let chatInfoBar = document.getElementById("chat-info-bar");
+let chatWindow = document.getElementById("chat-window")
 
 addBtn.onclick = () => input.click();
+addChatInCWin.onclick = () => input.click()
 input.onchange = async e => {
     const inputFiles = [...e.target.files];
     
@@ -301,13 +306,17 @@ input.onchange = async e => {
 
     let {msgs, users} = processMsgs(processedFiles.get(fName).data);
 
-
     popupWrapper.style.display = "grid";
     selectUserPopup.style.display = "block";
     popupCloseBtn.style.display = "none";
 
 
     selectUserSubmit.onclick = () => {
+        addChatInCWin.style.display = "none";
+        chatWindow.style.display = "block";
+        chatMsgDiv.style.display = "block";
+        chatInfoBar.style.display = "block";
+
         selectUserPopup.style.animation = "popup-hide .3s";
         selectUserPopup.onanimationend = () => {
             selectUserPopup.style.display = "none";
