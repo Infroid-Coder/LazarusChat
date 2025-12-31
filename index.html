@@ -20,6 +20,24 @@
             <img src="./imgs/favicon.png" alt="Logo" id="nav-logo">
             <h1 id="nav-title">Lazarus Chat</h1>
         </div>
+        <div class="nav-item">
+            <div class="nav-link-div">
+                <a href="#" class="nav-item-a">Home</a>
+                <div class="nav-item-underline"></div>
+            </div>
+        </div>
+        <div class="nav-item">
+            <div class="nav-link-div">
+                <a href="#about" class="nav-item-a">About</a>
+                <div class="nav-item-underline"></div>
+            </div>
+        </div>
+        <div class="nav-item">
+            <div class="nav-link-div">
+                <a href="#reviver" class="nav-item-a">Revive</a>
+                <div class="nav-item-underline"></div>
+            </div>
+        </div>
     </nav>
 
     <main>
@@ -29,33 +47,52 @@
                     Relive Every Conversation
                 </h2>
                 <p id="hero-desc">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora magni at deleniti expedita vero, autem nulla fugiat accusantium eos similique inventore quaerat nihil consequuntur temporibus placeat eaque iste tempore quos voluptatibus quas esse. Perspiciatis blanditiis eaque perferendis nam a, nisi libero optio ea porro maiores soluta rerum itaque, eum reprehenderit!
+                    Your WhatsApp chat exports deserve better than raw text files. LazarusChat transforms them into the chat experience you remember and love. Complete with documents, photos, videos, stickers, and that familiar feel. Everything happens locally in your browser. Your conversations stay yours, always private, beautifully preserved. And the best part, it's open source and free. Try it Now!
                 </p>
-                <button id="cta-btn">
-                    <span id="cta-btn-text">
-                        Resurrect a Chat
-                    </span>
-                    <img src="./imgs/right-arrow.png" alt="Down Arrow" id="cta-btn-icon">
+                <a href="#reviver" id="cta-btn-a">
+                    <button id="cta-btn">
+                        <span id="cta-btn-text">
+                            Resurrect a Chat
+                        </span>
+                        <img src="./imgs/right-arrow.png" alt="Down Arrow" id="cta-btn-icon">
+                    </button>
+                </a>
+            </div>
+        </section>
+        <section id="about">
+            <div id="about-sec-title-div">
+                <h2 id="about-sec-title">About LazarusChat</h2>
+                <div id="about-sec-title-underline"></div>
+            </div>
+            <p class="about-sec-p">
+                WhatsApp lets you export your conversations, but what you get is a messy text file buried in a ZIP archive, stripped of context and nearly impossible to read. Photos and videos become cryptic filenames. Multi-line messages break apart. The flow of conversation which is the thing that made those chats meaningful is lost. LazarusChat is built as a solution to this exact problem. Just drop in your export file and watch as raw text and media files turn into the familiar chat interface that you remember.
+            </p>
+            <p class="about-sec-p">
+                These aren't just "chat logs". They're memories. Conversations with people you love, moments you want to preserve, stories worth revisiting. Whether you're archiving old chats, reviewing important conversations, or simply taking a trip down memory lane, LazarusChat treats your data with the care it deserves. All processing happens directly in the browser. Everything is client-side. So your chats do not leave your device. Not even once. And best of all, the entire project is open source (MIT Licensed). You can always confirm what the website does and does not do.
+            </p>
+            <p class="about-sec-p">
+                I built this because I needed it myself, and I'm sharing it because everyone deserves better than wrestling with text files. It will always be free, with no premium tiers, no subscriptions, and no compromises.
+            </p>
+        </section>
+        <section id="reviver">
+            <div id="chat-window">
+                <div id="chat-info-bar">
+                    <h2 id="cib-recipient-name"></h2>
+                </div>
+                <div id="chat-msg-div">
+                </div>
+                <div id="chat-window-placeholder-div">
+                    <img src="./imgs/large-add-icon.png" alt="Add Chat" id="chat-window-placeholder-icon">
+                    <p id="chat-window-placeholder-p">No Chat Loaded Yet. Add Chat</p>
+                </div>
+            </div>
+        
+            <div id="toolbar">
+                <button id="add-chat-btn">
+                    <img src="./imgs/add-icon.png" alt="Add Chat">
                 </button>
             </div>
         </section>
-        <div id="chat-window">
-            <div id="chat-info-bar">
-                <h2 id="cib-recipient-name"></h2>
-            </div>
-            <div id="chat-msg-div">
-            </div>
-            <div id="chat-window-placeholder-div">
-                <img src="./imgs/large-add-icon.png" alt="Add Chat" id="chat-window-placeholder-icon">
-                <p id="chat-window-placeholder-p">No Chat Loaded Yet. Add Chat</p>
-            </div>
-        </div>
-    
-        <div id="toolbar">
-            <button id="add-chat-btn">
-                <img src="./imgs/add-icon.png" alt="Add Chat">
-            </button>
-        </div>
     </main>
     <footer id="footer">
         <p id="cr-statement">
