@@ -86,6 +86,18 @@ function genDoc(blob, name, isPdf){
 
     return mediaDocDiv;
 }
+function genDateMarker(date){
+    let dateMarkerDiv = document.createElement("div");
+    dateMarkerDiv.classList.add("date-marker");
+
+    let dateMarkerDateP = document.createElement("p");
+    dateMarkerDateP.classList.add("date-marker-date");
+    dateMarkerDateP.innerText = date;
+
+    dateMarkerDiv.appendChild(dateMarkerDateP);
+
+    return dateMarkerDiv;
+}
 
 function typeOf(blob, name){
     let result = null;
@@ -135,12 +147,21 @@ function processMsgs(chat){
 
             let dateObj = getDateObj(date, time);
 
-            if(lastMsgDateObj && lastMsgDateObj.getTime() <= dateObj.getTime()){
+            // console.log({
+            //         msg: [msg],
+            //         time: time,
+            //         date: date,
+            //         sender: sender,
+            //         isSystem: isSystemMsg
+            //     })
+
+            if(lastMsgDateObj === null || (lastMsgDateObj && lastMsgDateObj.getTime() <= dateObj.getTime())){
                 msgs.get(date).push({
                     msg: [msg],
                     time: time,
                     date: date,
-                    sender: sender
+                    sender: sender,
+                    isSystem: isSystemMsg
                 });
             }
 
@@ -154,12 +175,13 @@ function processMsgs(chat){
     return {msgs, users};
 }
 
-function newMsgElem(sender, time, type, msg, sentOrReceived){
+function newMsgElem(sender, time, type, msg, sentOrReceived, isSystem = false){
     if(type === "text" && msg.join("") === "") return null;
 
     let wrap = document.createElement("div");
     wrap.classList.add("msg");
-    wrap.classList.add((sentOrReceived === 0) ? "sent" : "received");
+    if(!isSystem) wrap.classList.add((sentOrReceived === 0) ? "sent" : "received");
+    else wrap.classList.add("system");
 
     let senderDiv = document.createElement("div")
     senderDiv.classList.add("msg-sender-div");
@@ -170,9 +192,13 @@ function newMsgElem(sender, time, type, msg, sentOrReceived){
     let timeDiv = document.createElement("div")
     timeDiv.classList.add("msg-time-div");
 
-    let senderP = document.createElement("p");
-    senderP.classList.add("msg-sender");
-    senderP.innerText = sender;
+    // console.log(sender, time, type, msg, sentOrReceived, isSystem);
+    let senderP;
+    if(!isSystem){
+        senderP = document.createElement("p");
+        senderP.classList.add("msg-sender");
+        senderP.innerText = sender;
+    }
 
     let msgElem;
     if(type === "text"){
@@ -217,11 +243,11 @@ function newMsgElem(sender, time, type, msg, sentOrReceived){
     timeP.classList.add("msg-time");
     timeP.innerText = time;
 
-    senderDiv.appendChild(senderP);
+    if(!isSystem) senderDiv.appendChild(senderP);
     contentDiv.appendChild(msgElem);
     timeDiv.appendChild(timeP);
 
-    wrap.appendChild(senderDiv);
+    if(!isSystem) wrap.appendChild(senderDiv);
     wrap.appendChild(contentDiv);
     wrap.appendChild(timeDiv);
 
@@ -310,7 +336,6 @@ input.onchange = async e => {
     selectUserPopup.style.display = "block";
     popupCloseBtn.style.display = "none";
 
-
     selectUserSubmit.onclick = () => {
         addChatInCWin.style.display = "none";
         chatWindow.style.display = "block";
@@ -328,25 +353,30 @@ input.onchange = async e => {
         let meUser = (users.includes(selectUserInput.value)) ? selectUserInput.value : users[0];
         let keys = [...msgs.keys()];
     
+
         for(let i = 0; i < keys.length; i++){
             let iMsgs = msgs.get(keys[i]);
+            chatMsgDiv.appendChild(genDateMarker(keys[i]));
             for(let j = 0; j < iMsgs.length; j++){
                 let jMsg = iMsgs[j];
                 if(!jMsg.msg[0] === "") continue;
 
-                if(jMsg.msg[0].endsWith("(file attached)")){
+                if(jMsg.isSystem){
+                    let msg = newMsgElem(jMsg.sender, jMsg.time, "text", jMsg.msg, null, true);
+                    if(msg) chatMsgDiv.appendChild(msg);
+                } else if(jMsg.msg[0].endsWith("(file attached)")){
                     let fileName = jMsg.msg[0].slice(0, -16);
                     let file = processedFiles.get(fileName);
                     if(file){
                         let msg = newMsgElem(jMsg.sender, jMsg.time, "media", file, (jMsg.sender === meUser) ? 0 : 1);
-                        if(msg) document.getElementById("chat-msg-div").appendChild(msg);
+                        if(msg) chatMsgDiv.appendChild(msg);
                     } else if(fileName.startsWith("STK-") && fileName.endsWith(".webp")){
                         let msg = newMsgElem(jMsg.sender, jMsg.time, "null-sticker", jMsg.msg, (jMsg.sender === meUser) ? 0 : 1)
-                        if(msg) document.getElementById("chat-msg-div").appendChild(msg);
+                        if(msg) chatMsgDiv.appendChild(msg);
                     }
                 } else{
                     let msg = newMsgElem(jMsg.sender, jMsg.time, "text", jMsg.msg, (jMsg.sender === meUser) ? 0 : 1)
-                    if(msg) document.getElementById("chat-msg-div").appendChild(msg);
+                    if(msg) chatMsgDiv.appendChild(msg);
                 }
             }
         }

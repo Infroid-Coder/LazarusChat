@@ -226,6 +226,21 @@ body{
     margin-top: 10px;
 }
 
+.date-marker{
+    margin: 0 auto;
+    width: fit-content;
+    background: rgb(35, 35, 35);
+    border-radius: 6px;
+    padding: 5px 7px;
+    margin-bottom: 10px;
+    color: rgba(255, 255, 255, .8);
+}
+.date-marker-date{
+    text-align: center;
+    margin: 0px;
+    font-size: .8em;
+}
+
 .sticker{
     width: 150px;
 }
@@ -243,6 +258,9 @@ body{
 }
 .msg.sent{
     margin-left: auto;
+}
+.msg.system{
+    margin: auto;
 }
 .msg-sender{
     margin: 0px;
@@ -272,6 +290,13 @@ body{
     border-radius: 10px;
     border-bottom-right-radius: 0px;
     margin-left: auto;
+}
+.msg.system .msg-content{
+    color: rgb(255, 255, 98);
+    background: rgb(25, 25, 25);
+    font-size: .8em;
+    text-align: center;
+    border-radius: 10px;
 }
 .msg-text{
     margin: 0px;
