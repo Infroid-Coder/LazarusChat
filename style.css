@@ -144,22 +144,24 @@ body{
     transition: .2s;
 }
 
-#about{
-    padding-top: 20px;
+.sec-title-div{
+    margin-bottom: 25px;
 }
-#about-sec-title-div{
-    margin-bottom: 30px;
-}
-#about-sec-title{
+.sec-title{
     text-align: center;
     font-size: 2em;
     margin: 0px;
 }
-#about-sec-title-underline{
+.sec-title-underline{
     width: 70px;
     height: 5px;
     background: var(--c2);
     margin: 0 auto;
+}
+
+#about{
+    padding-top: 20px;
+    margin-bottom: 50px;
 }
 .about-sec-p{
     width: 70vw;
@@ -192,7 +194,7 @@ body{
 
 #chat-window{
     width: 80%;
-    height: calc(85vh - 20px);
+    height: 80vh;
     padding: 20px;
     /* background: rgba(255, 255, 255, .05); */
     background: linear-gradient(-45deg, rgba(var(--c3-rgb), .12), rgba(var(--c1-rgb), .15));
@@ -255,6 +257,7 @@ body{
     padding: 5px;
     border-radius: 15px;
     width: fit-content;
+
 }
 .msg.sent{
     margin-left: auto;
@@ -285,6 +288,7 @@ body{
     border-bottom-left-radius: 0px;
     max-width: 40vw;
     width: fit-content;
+    word-wrap: break-word;
 }
 .msg.sent .msg-content{
     border-radius: 10px;

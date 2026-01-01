@@ -5,11 +5,30 @@ function isSticker(blob, name){
     return (isWebp && isValidName) ? true : false;
 }
 
-function getDateObj(date, time){
+function mdyToDmy(mdyDate){
+    let dateSplit = mdyDate.split("/");
+    let dateFormatted = [];
+
+    dateSplit[2] = "20" + dateSplit[2];
+    dateFormatted.push(dateSplit[1]);
+    dateFormatted.push(dateSplit[0]);
+    dateFormatted.push(dateSplit[2]);
+
+    return dateFormatted.join("/");
+}
+
+function getDateObj(date, time, format=1){
     let dateSplit = date.split("/");
     let dateFormatted = [];
-    for(let i = dateSplit.length-1; i >= 0; i--){
-        dateFormatted.push(dateSplit[i]);
+    if(format === 2){
+        dateSplit[2] = "20" + dateSplit[2];
+        dateFormatted.push(dateSplit[2]);
+        dateFormatted.push(dateSplit[0]);
+        dateFormatted.push(dateSplit[1]);
+    } else{
+        for(let i = dateSplit.length-1; i >= 0; i--){
+            dateFormatted.push(dateSplit[i]);
+        }
     }
 
     let d = new Date(dateFormatted.join("-") + ` ${time}`);
@@ -119,8 +138,12 @@ function processMsgs(chat){
     let chatSplitbyLB = chat.split(/\n/g);
     if(chatSplitbyLB[chatSplitbyLB.length-1] === "") chatSplitbyLB.pop();
 
-    let msgStartReg = /^\d{2}\/\d{2}\/\d{4}, \d{2}:\d{2} - /;
-    let systemMsgReg = /^\d{2}\/\d{2}\/\d{4}, \d{2}:\d{2} - ([^:]+$|[^:]{40}.+)/;
+    let msgStartReg1 = /^\d{2}\/\d{2}\/\d{4}, \d{2}:\d{2} - /;
+    let systemMsgReg1 = /^\d{2}\/\d{2}\/\d{4}, \d{2}:\d{2} - ([^:]+$|[^:]{40}.+)/;
+
+    let msgStartReg2 = /^\d{1,2}\/\d{1,2}\/\d{2}, \d{1,2}:\d{2} [AP]M - /;
+    let systemMsgReg2 = /^\d{1,2}\/\d{1,2}\/\d{2}, \d{1,2}:\d{2} [AP]M - ([^:]+$|[^:]{40}.+)/;
+    let dateReg = /^\d{1,2}\/\d{1,2}\/\d{2}/;
 
     let msgs = new Map();
     let lastMsgDateObj = null;
@@ -128,14 +151,13 @@ function processMsgs(chat){
 
     let users = [];
     let userSelect = document.getElementById("select-user-input");
-
+    
     for(let i = 0; i < chatSplitbyLB.length; i++){
         let line = chatSplitbyLB[i];
-        if(msgStartReg.test(line)){
-            let isSystemMsg = systemMsgReg.test(line) ? true : false;
+        if(msgStartReg1.test(line)){
+            let isSystemMsg = systemMsgReg1.test(line) ? true : false;
             let date = line.slice(0, 10);
             if(!msgs.has(date)) msgs.set(date, []);
-
             let time = line.slice(12, 17);
             let sender = (!isSystemMsg) ? line.slice(20, line.slice(17).indexOf(":")+17) : null;
             let msg = (!isSystemMsg) ? line.slice(line.slice(17).indexOf(":")+19) : line.slice(20);
@@ -147,13 +169,40 @@ function processMsgs(chat){
 
             let dateObj = getDateObj(date, time);
 
-            // console.log({
-            //         msg: [msg],
-            //         time: time,
-            //         date: date,
-            //         sender: sender,
-            //         isSystem: isSystemMsg
-            //     })
+            if(lastMsgDateObj === null || (lastMsgDateObj && lastMsgDateObj.getTime() <= dateObj.getTime())){
+                msgs.get(date).push({
+                    msg: [msg],
+                    time: time,
+                    date: date,
+                    sender: sender,
+                    isSystem: isSystemMsg
+                });
+            }
+
+            lastMsgDateObj = dateObj;
+            lastMsgDate = date;
+            lastMsgIndex = msgs.get(date).length-1;
+        } else if(msgStartReg2.test(line)){
+            let isSystemMsg = systemMsgReg2.test(line) ? true : false;
+            let date = dateReg.exec(line)[0];
+            if(!msgs.has(date)) msgs.set(date, []);
+
+            let time = msgStartReg2.exec(line)[0].slice(date.length+2, -3);
+
+            let dateAndTimeLength = date.length+time.length+5;
+            let sender = (!isSystemMsg) ? 
+                line.slice(dateAndTimeLength, line.slice(dateAndTimeLength).indexOf(":")+dateAndTimeLength) : null;
+
+            let msg = (!isSystemMsg) ? line.slice(
+                dateAndTimeLength + ((sender) ? sender.length : 0) + 2
+            ) : line.slice(dateAndTimeLength);
+
+            if(sender && !users.includes(sender)){
+                users.push(sender);
+                userSelect.innerHTML += `<option value="${sender}">${sender}</option>`
+            }
+
+            let dateObj = getDateObj(date, time, 2);
 
             if(lastMsgDateObj === null || (lastMsgDateObj && lastMsgDateObj.getTime() <= dateObj.getTime())){
                 msgs.get(date).push({
@@ -192,7 +241,6 @@ function newMsgElem(sender, time, type, msg, sentOrReceived, isSystem = false){
     let timeDiv = document.createElement("div")
     timeDiv.classList.add("msg-time-div");
 
-    // console.log(sender, time, type, msg, sentOrReceived, isSystem);
     let senderP;
     if(!isSystem){
         senderP = document.createElement("p");
@@ -356,7 +404,7 @@ input.onchange = async e => {
 
         for(let i = 0; i < keys.length; i++){
             let iMsgs = msgs.get(keys[i]);
-            chatMsgDiv.appendChild(genDateMarker(keys[i]));
+            chatMsgDiv.appendChild(genDateMarker(mdyToDmy(keys[i])));
             for(let j = 0; j < iMsgs.length; j++){
                 let jMsg = iMsgs[j];
                 if(!jMsg.msg[0] === "") continue;
