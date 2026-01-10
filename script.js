@@ -340,13 +340,15 @@ let chatWindow = document.getElementById("chat-window");
 let chatWindowBackdrop = document.getElementById("chat-window-backdrop");
 let reviverSec = document.getElementById("reviver");
 let toolbar = document.getElementById("toolbar");
-
+let fsCtrlBtn = document.getElementById("fs-chat-btn");
+let EnterFsBtnImg = document.querySelector("#fs-chat-btn .toolbar-btn-icon");
+let ExitFsBtnImg = document.querySelector("#fs-chat-btn .toolbar-btn-icon.fs");
 
 let lastChange = 0; // 0 = hide, 1 = show
 
 setInterval(() => {
     let currScroll = scrollY;
-    if(currScroll >= getScrollHeight(addChatInCWin)-20 && lastChange !== 1){
+    if(currScroll >= getScrollHeight(chatWindow)+20 && lastChange !== 1){
         lastChange = 1;
         toolbar.style.animationName = "toolbar-slide-in";
         toolbar.style.display = "grid";
@@ -361,9 +363,23 @@ setInterval(() => {
     }
 }, 0);
 
-chatWindow.onclick = () => {
-    chatWindow.classList.add("fs");
-    chatWindowBackdrop.classList.add("fs");
+let isFullScreen = false;
+
+fsCtrlBtn.onclick = () => {
+    console.log(EnterFsBtnImg, ExitFsBtnImg)
+    if(!isFullScreen){
+        chatWindow.classList.add("fs");
+        chatWindowBackdrop.classList.add("fs");
+        isFullScreen = true;
+        EnterFsBtnImg.style.display = "none";
+        ExitFsBtnImg.style.display = "block";
+    } else{
+        chatWindow.classList.remove("fs");
+        chatWindowBackdrop.classList.remove("fs");
+        isFullScreen = false;
+        EnterFsBtnImg.style.display = "block";
+        ExitFsBtnImg.style.display = "none";
+    }
 }
 
 addBtn.onclick = () => input.click();
