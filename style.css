@@ -174,22 +174,60 @@ body{
 #reviver{
     padding-top: 1px;
 }
-#add-chat-btn{
+
+#toolbar{
+    position: fixed;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: none;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 10px;
+    width: fit-content;
+    padding: 7px;
+    border-radius: 10px;
+    background-image: linear-gradient(rgba(255, 255, 255, .1), rgba(255, 255, 255, .1));
+    background-color: black;
+    animation-duration: .5s;
+}
+.toolbar-btn{
+    background: rgba(var(--c2-rgb), .5);
     border: none;
     padding: 0px;
     width: 35px;
     height: 35px;
     display: grid;
     border-radius: 10px;
-    border-top-left-radius: 0px;
     margin: 0px;
     margin-bottom: 0px;
     cursor: pointer;
+    transition: .2s;
 }
-#add-chat-btn img{
+.toolbar-btn:hover{
+    background: rgba(var(--c2-rgb), .6);
+}
+.toolbar-btn:hover .toolbar-btn-icon{
+    transform: scale(1.3);
+}
+.toolbar-btn-icon{
     width: 15px;
     margin: auto;
     filter: invert(.7);
+    transition: .4s;
+}
+.toolbar-btn-icon.fs{
+    display: none;
+    transition: .4s;
+}
+
+#chat-window-backdrop.fs{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, .5);
+    display: grid;
 }
 
 #chat-window{
@@ -197,13 +235,20 @@ body{
     height: 80vh;
     padding: 20px;
     /* background: rgba(255, 255, 255, .05); */
-    background: linear-gradient(-45deg, rgba(var(--c3-rgb), .12), rgba(var(--c1-rgb), .15));
+    background-image: linear-gradient(-45deg, rgba(var(--c3-rgb), .12), rgba(var(--c1-rgb), .15));
+    background-color: black;
     border: solid 1px var(--c1);
     border-radius: 15px;
     margin: 15px auto;
     /* margin-top: 0px; */
     overflow-y: auto;
     display: grid;
+    transition: .2s;
+}
+#chat-window.fs{
+    width: 90%;
+    height: 87vh;
+    margin: auto;
 }
 #chat-msg-div, #chat-info-bar{
     display: none;
@@ -419,6 +464,22 @@ body{
 @keyframes popup-hide {
     100%{
         transform: scale(0);
+    }
+}
+@keyframes toolbar-slide-in{
+    0%{
+        transform: translate(-50%, 200px);
+    }
+    60%{
+        transform: translate(-50%, -25px);
+    }
+}
+@keyframes toolbar-slide-out{
+    40%{
+        transform: translate(-50%, -25px);
+    }
+    100%{
+        transform: translate(-50%, 200px);
     }
 }
 

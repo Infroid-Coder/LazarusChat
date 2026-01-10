@@ -1,3 +1,9 @@
+function getScrollHeight(elem){
+    const rect = elem.getBoundingClientRect();
+    const height = scrollY + rect.top - innerHeight;
+    return height;
+}
+
 function isSticker(blob, name){
     let isWebp = (blob.type === "image/webp" || /\.(webp|was)$/i.test(name)) ? true : false;
     let isValidName = name.startsWith("STK-");
@@ -330,8 +336,35 @@ let input = document.getElementById("upload");
 let addBtn = document.getElementById("add-chat-btn");
 let addChatInCWin = document.getElementById("chat-window-placeholder-div");
 let chatMsgDiv = document.getElementById("chat-msg-div");
-let chatInfoBar = document.getElementById("chat-info-bar");
-let chatWindow = document.getElementById("chat-window")
+let chatWindow = document.getElementById("chat-window");
+let chatWindowBackdrop = document.getElementById("chat-window-backdrop");
+let reviverSec = document.getElementById("reviver");
+let toolbar = document.getElementById("toolbar");
+
+
+let lastChange = 0; // 0 = hide, 1 = show
+
+setInterval(() => {
+    let currScroll = scrollY;
+    if(currScroll >= getScrollHeight(addChatInCWin)-20 && lastChange !== 1){
+        lastChange = 1;
+        toolbar.style.animationName = "toolbar-slide-in";
+        toolbar.style.display = "grid";
+    } else if(currScroll <= getScrollHeight(chatWindow)+20 && lastChange !== 0){
+        lastChange = 0;
+        toolbar.style.animationName = "toolbar-slide-out";
+        toolbar.onanimationend = () => {
+            toolbar.style.display = "none";
+            toolbar.style.animationName = "toolbar-slide-in";
+            toolbar.onanimationend = null;
+        }
+    }
+}, 0);
+
+chatWindow.onclick = () => {
+    chatWindow.classList.add("fs");
+    chatWindowBackdrop.classList.add("fs");
+}
 
 addBtn.onclick = () => input.click();
 addChatInCWin.onclick = () => input.click()
@@ -388,7 +421,6 @@ input.onchange = async e => {
         addChatInCWin.style.display = "none";
         chatWindow.style.display = "block";
         chatMsgDiv.style.display = "block";
-        chatInfoBar.style.display = "block";
 
         selectUserPopup.style.animation = "popup-hide .3s";
         selectUserPopup.onanimationend = () => {
@@ -404,7 +436,9 @@ input.onchange = async e => {
 
         for(let i = 0; i < keys.length; i++){
             let iMsgs = msgs.get(keys[i]);
-            chatMsgDiv.appendChild(genDateMarker(mdyToDmy(keys[i])));
+            chatMsgDiv.appendChild(
+                genDateMarker(mdyToDmy(keys[i]))
+            );
             for(let j = 0; j < iMsgs.length; j++){
                 let jMsg = iMsgs[j];
                 if(!jMsg.msg[0] === "") continue;

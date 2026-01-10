@@ -79,22 +79,25 @@
                 <h2 class="sec-title">Revive a Chat</h2>
                 <div class="sec-title-underline"></div>
             </div>
-            <div id="chat-window">
-                <div id="chat-info-bar">
-                    <h2 id="cib-recipient-name"></h2>
-                </div>
-                <div id="chat-msg-div">
-                    
-                </div>
-                <div id="chat-window-placeholder-div">
-                    <img src="./imgs/large-add-icon.png" alt="Add Chat" id="chat-window-placeholder-icon">
-                    <p id="chat-window-placeholder-p">No Chat Loaded Yet. Add Chat</p>
+            <div id="chat-window-backdrop">
+                <div id="chat-window">
+                    <div id="chat-msg-div">
+                        
+                    </div>
+                    <div id="chat-window-placeholder-div">
+                        <img src="./imgs/large-add-icon.png" alt="Add Chat" id="chat-window-placeholder-icon">
+                        <p id="chat-window-placeholder-p">No Chat Loaded Yet. Add Chat</p>
+                    </div>
                 </div>
             </div>
         
             <div id="toolbar">
-                <button id="add-chat-btn">
-                    <img src="./imgs/add-icon.png" alt="Add Chat">
+                <button id="add-chat-btn" class="toolbar-btn">
+                    <img src="./imgs/add-icon.png" alt="Add Chat" class="toolbar-btn-icon">
+                </button>
+                <button id="fs-chat-btn" class="toolbar-btn">
+                    <img src="./imgs/fullscreen.png" alt="Enter Fullscreen" class="toolbar-btn-icon">
+                    <img src="./imgs/exit-fullscreen.png" alt="Exit Fullscreen" class="toolbar-btn-icon fs">
                 </button>
             </div>
         </section>
