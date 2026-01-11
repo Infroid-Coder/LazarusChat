@@ -343,6 +343,15 @@ let toolbar = document.getElementById("toolbar");
 let fsCtrlBtn = document.getElementById("fs-chat-btn");
 let EnterFsBtnImg = document.querySelector("#fs-chat-btn .toolbar-btn-icon");
 let ExitFsBtnImg = document.querySelector("#fs-chat-btn .toolbar-btn-icon.fs");
+let imageViewer = document.getElementById("img-viewer");
+
+if(window.innerHeight > window.innerWidth){
+    imageViewer.style.width = "95vw";
+    imageViewer.style.height = "auto";
+} else {
+    imageViewer.style.height = "95vh";
+    imageViewer.style.width = "auto";
+}
 
 let lastChange = 0; // 0 = hide, 1 = show
 
